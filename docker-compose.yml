@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  teslamate:
+    image: teslamate/teslamate:latest
+    container_name: teslamate
+    restart: always
+    environment:
+      - DATABASE_USER=${DB_USER}
+      - DATABASE_PASS=${DB_PASS}
+      - DATABASE_NAME=teslamate
+      - DATABASE_HOST=tesla_db
+      - MQTT_HOST=tesla_mosquitto
+    ports:
+      - 4000:4000
+    volumes:
+      - ./import:/opt/app/import
+    cap_drop:
+      - all
+
+  database:
+    image: postgres:13
+    container_name: tesla_db
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=teslamate
+    volumes:
+      - ${HOME}/Data/tesla_db:/var/lib/postgresql/data
+
+  grafana:
+    image: teslamate/grafana:latest
+    container_name: tesla_grafana
+    restart: always
+    environment:
+      - DATABASE_USER=${DB_USER}
+      - DATABASE_PASS=${DB_PASS}
+      - DATABASE_NAME=teslamate
+      - DATABASE_HOST=tesla_db
+    ports:
+      - 3000:3000
+    volumes:
+      - ${HOME}/Data/tesla_grafana:/var/lib/grafana
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: tesla_mosquitto
+    restart: always
+    command: mosquitto -c /mosquitto-no-auth.conf
+    ports:
+      - 1883:1883
+    volumes:
+      - ${HOME}/Data/tesla_mosquitto/conf:/mosquitto/config
+      - ${HOME}/Data/tesla_mosquitto/data:/mosquitto/data
+
+networks:
+  proxy:
+    external: true
