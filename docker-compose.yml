@@ -32,11 +32,11 @@ services:
       - "traefik.http.routers.teslamate-insecure.rule=Host(`${TM_DOMAIN}`)"
       - "traefik.http.routers.teslamate-insecure.middlewares=redirect"
       - "traefik.http.routers.teslamate-ws.rule=Host(`${TM_DOMAIN}`) && Path(`/live/websocket`)"
-      - "traefik.http.routers.teslamate-ws.entrypoints=websecure"
+      - "traefik.http.routers.teslamate-ws.entrypoints=https"
       - "traefik.http.routers.teslamate-ws.tls"
       - "traefik.http.routers.teslamate.rule=Host(`${TM_DOMAIN}`)"
       - "traefik.http.routers.teslamate.middlewares=teslamate-auth"
-      - "traefik.http.routers.teslamate.entrypoints=websecure"
+      - "traefik.http.routers.teslamate.entrypoints=https"
       - "traefik.http.routers.teslamate.tls.certresolver=tmhttpchallenge"
 
   database:
@@ -81,7 +81,7 @@ services:
       - "traefik.http.routers.grafana-insecure.rule=Host(`${TM_DOMAIN}`)"
       - "traefik.http.routers.grafana-insecure.middlewares=redirect"
       - "traefik.http.routers.grafana.rule=Host(`${TM_DOMAIN}`) && (Path(`/grafana`) || PathPrefix(`/grafana/`))"
-      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.entrypoints=https"
       - "traefik.http.routers.grafana.tls.certresolver=tmhttpchallenge"
 
   mosquitto:
