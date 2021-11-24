@@ -28,16 +28,14 @@ services:
       - "traefik.enable=true"
       - "traefik.port=4000"
       - "traefik.http.middlewares.redirect.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.teslamate-auth.basicauth.realm=teslamate"
-      - "traefik.http.routers.teslamate-insecure.rule=Host(`${TM_DOMAIN}`)"
-      - "traefik.http.routers.teslamate-insecure.middlewares=redirect"
-      - "traefik.http.routers.teslamate-ws.rule=Host(`${TM_DOMAIN}`) && Path(`/live/websocket`)"
-      - "traefik.http.routers.teslamate-ws.entrypoints=https"
-      - "traefik.http.routers.teslamate-ws.tls"
+      - "traefik.http.routers.teslamate-secure.rule=Host(`${TM_DOMAIN}`)"
+      - "traefik.http.routers.teslamate-secure.middlewares=redirect"
+      - "traefik.http.routers.teslamate-secure.rule=Host(`${TM_DOMAIN}`) && Path(`/live/websocket`)"
+      - "traefik.http.routers.teslamate-secure.entrypoints=https"
+      - "traefik.http.routers.teslamate-secure.tls"
       - "traefik.http.routers.teslamate.rule=Host(`${TM_DOMAIN}`)"
       - "traefik.http.routers.teslamate.middlewares=teslamate-auth"
       - "traefik.http.routers.teslamate.entrypoints=https"
-      - "traefik.http.routers.teslamate.tls.certresolver=tmhttpchallenge"
 
   database:
     image: postgres:13
@@ -78,11 +76,10 @@ services:
       - "traefik.enable=true"
       - "traefik.port=3000"
       - "traefik.http.middlewares.redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.grafana-insecure.rule=Host(`${TM_DOMAIN}`)"
-      - "traefik.http.routers.grafana-insecure.middlewares=redirect"
+      - "traefik.http.routers.grafana-secure.rule=Host(`${TM_DOMAIN}`)"
+      - "traefik.http.routers.grafana-secure.middlewares=redirect"
       - "traefik.http.routers.grafana.rule=Host(`${TM_DOMAIN}`) && (Path(`/grafana`) || PathPrefix(`/grafana/`))"
       - "traefik.http.routers.grafana.entrypoints=https"
-      - "traefik.http.routers.grafana.tls.certresolver=tmhttpchallenge"
 
   mosquitto:
     image: eclipse-mosquitto:2
