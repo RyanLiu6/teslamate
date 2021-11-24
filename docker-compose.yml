@@ -42,8 +42,8 @@ services:
     container_name: tesla_db
     restart: always
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_USER=${TM_DB_USER}
+      - POSTGRES_PASSWORD=${TM_DB_PASS}
       - POSTGRES_DB=teslamate
     volumes:
       - ${HOME}/Data/teslamate/postgres:/var/lib/postgresql/data
@@ -54,8 +54,8 @@ services:
     restart: always
     user: "1000"
     environment:
-      - DATABASE_USER=${DB_USER}
-      - DATABASE_PASS=${DB_PASS}
+      - DATABASE_USER=${TM_DB_USER}
+      - DATABASE_PASS=${TM_DB_PASS}
       - DATABASE_NAME=teslamate
       - DATABASE_HOST=tesla_db
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
