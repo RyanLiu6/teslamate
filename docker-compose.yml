@@ -5,6 +5,8 @@ services:
     image: teslamate/teslamate:latest
     container_name: teslamate
     restart: always
+    networks:
+      - proxy
     depends_on:
       - database
     environment:
@@ -41,6 +43,8 @@ services:
     image: postgres:13
     container_name: tesla_db
     restart: always
+    networks:
+      - proxy
     environment:
       - POSTGRES_USER=${TM_DB_USER}
       - POSTGRES_PASSWORD=${TM_DB_PASS}
@@ -52,6 +56,8 @@ services:
     image: teslamate/grafana:latest
     container_name: tesla_grafana
     restart: always
+    networks:
+      - proxy
     user: "1000"
     environment:
       - DATABASE_USER=${TM_DB_USER}
@@ -82,6 +88,8 @@ services:
     image: eclipse-mosquitto:2
     container_name: tesla_mosquitto
     restart: always
+    networks:
+      - proxy
     command: mosquitto -c /mosquitto-no-auth.conf
     ports:
       - 1883:1883
