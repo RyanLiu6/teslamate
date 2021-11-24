@@ -33,6 +33,7 @@ services:
     image: teslamate/grafana:latest
     container_name: tesla_grafana
     restart: always
+    user: "1000"
     environment:
       - DATABASE_USER=${DB_USER}
       - DATABASE_PASS=${DB_PASS}
