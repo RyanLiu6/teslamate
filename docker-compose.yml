@@ -26,16 +26,16 @@ services:
       - all
     labels:
       - "traefik.enable=true"
-      - "traefik.port=4000"
-      - "traefik.http.middlewares.redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.teslamate-secure.rule=Host(`${TM_DOMAIN}`)"
-      - "traefik.http.routers.teslamate-secure.middlewares=redirect"
-      - "traefik.http.routers.teslamate-secure.rule=Host(`${TM_DOMAIN}`) && Path(`/live/websocket`)"
-      - "traefik.http.routers.teslamate-secure.entrypoints=https"
-      - "traefik.http.routers.teslamate-secure.tls"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.teslamate.entrypoints=http"
       - "traefik.http.routers.teslamate.rule=Host(`${TM_DOMAIN}`)"
-      - "traefik.http.routers.teslamate.middlewares=teslamate-auth"
-      - "traefik.http.routers.teslamate.entrypoints=https"
+      - "traefik.http.routers.teslamate.middlewares=headers,redirectregex,https-redirect,"
+      - "traefik.http.routers.teslamate-secure.entrypoints=https"
+      - "traefik.http.routers.teslamate-secure.rule=Host(`${TM_DOMAIN}`) && Path(`/live/websocket`)"
+      - "traefik.http.routers.teslamate-secure.tls=true"
+      - "traefik.http.routers.teslamate-secure.tls.certresolver=http"
+      - "traefik.http.routers.teslamate-secure.service=teslamate"
+      - "traefik.http.services.teslamate.loadbalancer.server.port=4000"
 
   database:
     image: postgres:13
@@ -74,12 +74,16 @@ services:
       - ${HOME}/Data/teslamate/grafana:/var/lib/grafana
     labels:
       - "traefik.enable=true"
-      - "traefik.port=3000"
-      - "traefik.http.middlewares.redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.grafana-secure.rule=Host(`${TM_DOMAIN}`)"
-      - "traefik.http.routers.grafana-secure.middlewares=redirect"
-      - "traefik.http.routers.grafana.rule=Host(`${TM_DOMAIN}`) && (Path(`/grafana`) || PathPrefix(`/grafana/`))"
-      - "traefik.http.routers.grafana.entrypoints=https"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.grafana.entrypoints=http"
+      - "traefik.http.routers.grafana.rule=Host(`${TM_DOMAIN}`)"
+      - "traefik.http.routers.grafana.middlewares=headers,redirectregex,https-redirect,"
+      - "traefik.http.routers.grafana-secure.entrypoints=https"
+      - "traefik.http.routers.grafana-secure.rule=Host(`${TM_DOMAIN}`) && (Path(`/grafana`) || PathPrefix(`/grafana/`))"
+      - "traefik.http.routers.grafana-secure.tls=true"
+      - "traefik.http.routers.grafana-secure.tls.certresolver=http"
+      - "traefik.http.routers.grafana-secure.service=grafana"
+      - "traefik.http.services.grafana.loadbalancer.server.port=4000"
 
   mosquitto:
     image: eclipse-mosquitto:2
